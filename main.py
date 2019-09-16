@@ -14,7 +14,7 @@ try:
             ip,
             credentials['username'],
             credentials['password'])
-        if device.initial_connect() is True:
+        if device.initial_connect_ssh() or device.initial_connect_telnet():
             device.send_command('terminal length 0')
             device.search_device_hostname()
             device.parsing_show_power_inline_output()
@@ -23,10 +23,10 @@ try:
                 str(device.ip) + ',' +
                 str(device.hostname) + ',' +
                 str(device.poe_consumers) + ',' +
-                str(device.poe_summarypower))
+                str(device.poe_summarypower) + '\n')
             csv_log.write(csv_row)
         device.session.close()
-        csv_log.close()
+    csv_log.close()
 except KeyboardInterrupt:
     print('\n', 'Program is terminated due to user request !')
 exit()

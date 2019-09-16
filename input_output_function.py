@@ -18,8 +18,6 @@ def keyboard_input():
                 'Enter username (or Ctrl-C to exit) > ')
             credentials['password'] = getpass(
                 'Enter password (or Ctrl-C to exit) > ')
-            credentials['enable'] = getpass(
-                'Enter enable password (or Ctrl-C to exit) > ')
             return credentials
         except KeyboardInterrupt:
             print('\n', 'Program is terminated due to user request !')
@@ -31,5 +29,5 @@ def output_to_console(dev):
     print('Device IP address is', str(dev.ip))
     print('Device hostname is', str(dev.hostname))
     print('Device PoE consumers =', str(dev.poe_consumers))
-    print('Device PoE summary PoE power =', str(dev.poe_summarypower))
+    print('Device summary PoE power =', str(dev.poe_summarypower))
     return None

@@ -1,4 +1,4 @@
-import pexpect as ssh
+import pexpect
 from pexpect import TIMEOUT, EOF
 import re
 
@@ -13,17 +13,36 @@ class POEconsumer():
         self.hostname = None
         self.poe_consumers = 0
         self.poe_summarypower = 0
-        self.credentials = (
-            'ssh ' + self.username + '@' + self.ip)
         self.timeout_message = ' '.join([
             'Connection to the device', self.ip, 'timed out:'])
         self.unexpected_message = ' '.join([
             'Connection to the device', self.ip,
             'received unexpected output :'])
 
-    def initial_connect(self):
+    def initial_connect_ssh(self):
         try:
-            self.session = ssh.spawn(self.credentials, timeout=30)
+            credentials = 'ssh ' + self.username + '@' + self.ip
+            self.session = pexpect.spawn(credentials, timeout=30)
+            new_host = bool(self.session.expect(['rd:', 'no']))
+            if new_host is True:
+                self.session.sendline('yes')
+                self.session.expect('rd:')
+            self.session.sendline(self.password)
+            self.session.expect(['#', '>'])
+            return True
+        except TIMEOUT:
+            print(self.timeout_message)
+            print(self.session.before.decode('utf-8').strip())
+            return False
+        except EOF:
+            print(self.unexpected_message)
+            print(self.session.before.decode('utf-8').strip())
+            return False
+
+    def initial_connect_telnet(self):
+        try:
+            credentials = 'telnet ' + self.username + '@' + self.ip
+            self.session = pexpect.spawn(credentials, timeout=30)
             new_host = bool(self.session.expect(['rd:', 'no']))
             if new_host is True:
                 self.session.sendline('yes')
