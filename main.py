@@ -8,6 +8,7 @@ try:
     ip_addresses = reading_ip_from_file('devices.txt')
     credentials = keyboard_input()
     csv_log = open('log.csv', 'w')
+    csv_log.write('sep=,' + '\n')
     csv_log.write('IP, hostname, PoE consumer, PoE summary power' + '\n')
     for ip in ip_addresses:
         device = dev.POEconsumer(
