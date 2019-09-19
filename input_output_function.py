@@ -3,9 +3,8 @@ from getpass import getpass
 
 def reading_ip_from_file(devices):
     ip_addresses = list()
-    file = open(devices, 'r')
-    ip_addresses = [line.strip() for line in file]
-    file.close()
+    with open(devices, 'r') as file:
+        ip_addresses = [line.strip() for line in file]
     return ip_addresses
 
 

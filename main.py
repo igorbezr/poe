@@ -11,7 +11,7 @@ try:
     csv_log.write('sep=,' + '\n')
     csv_log.write('IP, hostname, PoE consumer, PoE summary power' + '\n')
     for ip in ip_addresses:
-        device = dev.POEconsumer(
+        device = dev.POEdevice(
             ip,
             credentials['username'],
             credentials['password'])

@@ -3,7 +3,7 @@ from pexpect import TIMEOUT, EOF
 import re
 
 
-class POEconsumer():
+class POEdevice():
 
     def __init__(self, ip, username, password):
         self.ip = ip
@@ -41,12 +41,11 @@ class POEconsumer():
 
     def initial_connect_telnet(self):
         try:
-            credentials = 'telnet ' + self.username + '@' + self.ip
+            credentials = 'telnet ' + self.ip
             self.session = pexpect.spawn(credentials, timeout=30)
-            new_host = bool(self.session.expect(['rd:', 'no']))
-            if new_host is True:
-                self.session.sendline('yes')
-                self.session.expect('rd:')
+            self.session.expect('name:')
+            self.session.sendline(self.username)
+            self.session.expect('rd:')
             self.session.sendline(self.password)
             self.session.expect(['#', '>'])
             return True
@@ -62,7 +61,7 @@ class POEconsumer():
     def send_command(self, command):
         try:
             self.session.sendline(command)
-            self.session.expect('#')
+            self.session.expect(['#', '>'])
             return True
         except TIMEOUT:
             print(self.timeout_message)
