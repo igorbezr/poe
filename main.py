@@ -9,7 +9,13 @@ try:
     credentials = keyboard_input()
     csv_log = open('log.csv', 'w')
     csv_log.write('sep=,' + '\n')
-    csv_log.write('IP, hostname, PoE consumer, PoE summary power' + '\n')
+    columns_headers = (
+        'IP,' +
+        'hostname,' +
+        'PoE consumers,' +
+        'Total used power,' +
+        'Remaining available power' + '\n')
+    csv_log.write(columns_headers)
     for ip in ip_addresses:
         device = dev.POEdevice(
             ip,
@@ -23,8 +29,9 @@ try:
             csv_row = (
                 str(device.ip) + ',' +
                 str(device.hostname) + ',' +
-                str(device.poe_consumers) + ',' +
-                str(device.poe_summarypower) + '\n')
+                str(device.consumers) + ',' +
+                str(device.used_power) + ',' +
+                str(device.available_power) + '\n')
             csv_log.write(csv_row)
         device.session.close()
     csv_log.close()

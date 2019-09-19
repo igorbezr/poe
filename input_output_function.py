@@ -27,6 +27,7 @@ def output_to_console(dev):
     print('')
     print('Device IP address is', str(dev.ip))
     print('Device hostname is', str(dev.hostname))
-    print('Device PoE consumers =', str(dev.poe_consumers))
-    print('Device summary PoE power =', str(dev.poe_summarypower))
+    print('PoE consumers =', str(dev.consumers), '(devices)')
+    print('Total used power =', str(dev.used_power), '(w)')
+    print('Remaining available power =', str(dev.available_power), '(w)')
     return None

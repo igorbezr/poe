@@ -11,8 +11,9 @@ class POEdevice():
         self.password = password
         self.session = None
         self.hostname = None
-        self.poe_consumers = 0
-        self.poe_summarypower = 0
+        self.consumers = 0
+        self.used_power = 0
+        self.available_power = 0
         self.timeout_message = ' '.join([
             'Connection to the device', self.ip, 'timed out:'])
         self.unexpected_message = ' '.join([
@@ -83,12 +84,18 @@ class POEdevice():
         return None
 
     def parsing_show_power_inline_output(self):
-        self.send_command('show power inline | in on')
+        self.send_command('show power inline | in on|Available')
         config = self.session.before.decode('utf-8').splitlines()
-        output = re.compile('on         [0-9]\.[0-9]')
-        for line in config:
-            if output.search(line):
-                self.poe_consumers += 1
-                poe_power = float(output.search(line).group(0)[11:])
-                self.poe_summarypower += poe_power
+        available = re.compile('[0-9]{3}\.[0-9]')
+        consumer = re.compile('on         [0-9]{1,2}\.[0-9]')
+        if available.search(config[1]):
+                available_power = float(available.search(config[1]).group(0))
+        for line in config[2:]:
+            if consumer.search(line):
+                self.consumers += 1
+                used_power = float(consumer.search(line).group(0)[11:])
+                self.used_power += used_power
+        self.available_power = available_power - self.used_power
+        self.used_power = round(self.used_power, 2)
+        self.available_power = round(self.available_power, 2)
         return None
